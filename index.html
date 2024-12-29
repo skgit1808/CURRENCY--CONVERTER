@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INR Currency Converter</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #6188ca;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #0f0c0c;
+    }
+    .container {
+      background-color: #be70e6;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      color: #0a0a0a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #070303;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      background-color: #112c3e;
+      border: none;
+      color: white;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #0d4469;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2d2b2a;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>INR Currency Converter</h1>
+    
+    <label for="currency">Select Target Currency</label>
+    <select id="currency">
+      <option value="USD">US Dollar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="GBP">British Pound (GBP)</option>
+      <option value="AUD">Australian Dollar (AUD)</option>
+      <option value="CAD">Canadian Dollar (CAD)</option>
+      <option value="JPY">Japanese Yen (JPY)</option>
+      <option value="CHF">Swiss Franc (CHF)</option>
+      <option value="CNY">Chinese Yuan (CNY)</option>
+    </select>
+
+    <label for="amount">Amount in INR</label>
+    <input type="number" id="amount" placeholder="Enter amount in INR" />
+
+    <button class="button" onclick="convertCurrency()">Convert</button>
+
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    // Function to fetch and display currency conversion
+    async function convertCurrency() {
+      const amount = document.getElementById('amount').value;
+      const currency = document.getElementById('currency').value;
+      const resultDiv = document.getElementById('result');
+
+      if (amount === "") {
+        resultDiv.innerHTML = "Please enter a valid amount in INR.";
+        return;
+      }
+
+      const apiKey = '68dba5879ee54acb642c82c2'; // Replace with your actual API key from ExchangeRate-API
+      const url = `https://v6.exchangerate-api.com/v6/${apiKey}/latest/INR`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.result === "success") {
+          const rate = data.conversion_rates[currency];
+          const convertedAmount = (amount * rate).toFixed(2);
+          resultDiv.innerHTML = `${amount} INR = ${convertedAmount} ${currency}`;
+        } else {
+          resultDiv.innerHTML = "Error fetching the exchange rate. Please try again later.";
+        }
+      } catch (error) {
+        resultDiv.innerHTML = "Error fetching data. Please check your internet connection.";
+      }
+    }
+  </script>
+
+</body>
+</html>
